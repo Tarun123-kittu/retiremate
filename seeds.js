@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Question = require('./src/models/questions-prime.model');
 const LessThan40Model = require('./src/models/questions-lessthan40.model');
-const group40to49Model = require('./src/models/questions-40to49.model');
+const Group40to49Model = require('./src/models/questions-40to49.model');
 
 
 const MONGODB_URI = 'mongodb://localhost:27017/Retiremate';
@@ -321,7 +321,6 @@ const seed = async () => {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
 
-        // Seed common question
         const existingCommon = await Question.findOne({ questionText: 'How old are you?' });
         if (!existingCommon) {
             const commonQuestion = new Question({
@@ -343,7 +342,7 @@ const seed = async () => {
         }
 
         await seedQuestions(lessThan40Data, LessThan40Model, 'LessThan40');
-        await seedQuestions(questionsData_40_49, group40to49Model, '40-49');
+        await seedQuestions(questionsData_40_49, Group40to49Model, '40-49');
 
         console.log('Seeding complete.');
     } catch (error) {
