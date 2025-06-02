@@ -34,8 +34,8 @@ exports.getNextQuestion = async (req, res) => {
                 somethingWentWrong, "Incorrect prime value. It must be one of:'less_than_40','40_49','50_59','60_65','66_79','80_plus'"))
         }
 
-        const question = await getNextQuestion(prime_value, next_question);
-        return res.status(200).json(successResponse("Next question fetched successfully", question));
+        let {question,isLastQuestion} = await getNextQuestion(prime_value, next_question);
+        return res.status(200).json(successResponse("Next question fetched successfully",{isLastQuestion,question}));
 
     } catch (error) {
         console.log("ERROR::", error)
