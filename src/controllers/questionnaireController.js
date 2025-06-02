@@ -1,6 +1,6 @@
 const resMessages = require("../constants/resMessages.constants")
 const { errorResponse, successResponse } = require("../utils/responseHandler.util")
-const { getPrimeQuestions, getNextQuestion } = require("../services/questionnarie.service")
+const { getPrimeQuestions, getNextQuestion,getSystemGreetings } = require("../services/questionnarie.service")
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -8,8 +8,11 @@ exports.getPrimeQuestions = async (req, res) => {
     try {
         const uuid = uuidv4()
         const questions = await getPrimeQuestions()
+        const system_greetings = await getSystemGreetings()
+       
         let data = {
             userId: uuid,
+            system_greetings:system_greetings[0].system_greetings,
             questions: questions
         }
         return res.status(200).json(successResponse(resMessages.success.dataRetrieved, data))

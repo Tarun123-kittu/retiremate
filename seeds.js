@@ -333,7 +333,8 @@ const seed = async () => {
                     { value: '60_65', label: '60-65', comment: 'You may already be retired or very close—let’s refine your strategy.' },
                     { value: '66_79', label: '66-79', comment: 'You\'re likely enjoying retirement—let’s make sure your plan is sustainable.' },
                     { value: '80_plus', label: '80+', comment: 'Your experience is valuable—let’s ensure comfort and legacy planning.' }
-                ]
+                ],
+                system_greetings:['Welcome to Retiremate !!','I am John , your trusted advisor on retirement planning','I am going to guide you over a simple conversation']
             });
             await commonQuestion.save();
             console.log('Seeded: "How old are you?"');

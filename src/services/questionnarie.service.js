@@ -1,17 +1,28 @@
 const primeQuestionsModel = require('../models/questions-prime.model')
-const LessThan40Model =  require("../models/questions-lessthan40.model")
+const LessThan40Model = require("../models/questions-lessthan40.model")
 const Group40to49Model = require("../models/questions-40to49.model")
 
 
 
 const getPrimeQuestions = async () => {
     try {
-        let questions = await primeQuestionsModel.find()
+        let questions = await primeQuestionsModel.find().select('questionText type options')
         return questions
     } catch (error) {
         throw error.message
     }
 }
+
+const getSystemGreetings = async () => {
+    try {
+        let questions = await primeQuestionsModel.find().select('system_greetings')
+        return questions
+    } catch (error) {
+        throw error.message
+    }
+}
+
+
 
 const modelMap = {
     less_than_40: LessThan40Model,
@@ -33,4 +44,4 @@ const getNextQuestion = async (prime_value, next_question) => {
 
 };
 
-module.exports = { getPrimeQuestions, getNextQuestion };
+module.exports = { getPrimeQuestions, getNextQuestion, getSystemGreetings };

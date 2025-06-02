@@ -10,6 +10,8 @@ const QuestionSchema = new mongoose.Schema({
   questionText: { type: String, required: true },
   type: { type: String, enum: ['question', 'statement'], default: 'question' },
   options: [OptionSchema],
+  system_greetings: [String] 
+
 },{timestamps:true});
 
 let primeQuestionsModel = mongoose.model('prime-questions', QuestionSchema);
