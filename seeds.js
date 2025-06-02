@@ -65,7 +65,7 @@ const lessThan40Data = [
         options: [
             { label: 'Yes, every paycheck', comment: 'Great habit! Consistency is the key to compounding returns.' },
             { label: 'Occasionally', comment: 'Consider automating your contributions to stay disciplined.' },
-            { label: "Not currently', comment: 'This is a critical time to start—it's not too late to make up ground." },
+            { label: "Not currently", comment: "This is a critical time to start—it's not too late to make up ground." },
             { label: 'I don’t have a retirement account', comment: 'Opening an account now can help you benefit from tax advantages and long-term growth.' }
         ]
     },
