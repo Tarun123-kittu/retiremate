@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Question = require('./src/models/questions-prime.model');
 const LessThan40Model = require('./src/models/questions-lessthan40.model');
 const Group40to49Model = require('./src/models/questions-40to49.model');
+const Group50to59Model = require('./src/models/questions-50to59.model')
+const Group60to65Model = require('./src/models/questions-60to65.model')
+const Group66to79Model = require('./src/models/questions-66to79.model')
+const Group80plus = require('./src/models/questions-80plus.model')
 
 
 const MONGODB_URI = 'mongodb://localhost:27017/Retiremate';
@@ -304,6 +308,651 @@ const questionsData_40_49 = [
     }
 ];
 
+const questionsData_50_59 = [
+    {
+        question_number: 1,
+        questionText: "Are you retired?",
+        type: 'question',
+        options: [
+            { label: 'Yes, not working', comment: 'Wonderful! Let’s focus on maximizing income and minimizing stress.' },
+            { label: 'No, working full-time', comment: 'Let’s prepare your retirement timeline and secure your financial future.' },
+            { label: 'Working part-time', comment: 'Part-time work offers flexibility—let’s plan around this mixed income.' }
+        ]
+    },
+    {
+        question_number: 2,
+        questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
+        type: 'statement',
+        options: [],
+        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+    },
+    {
+        question_number: 3,
+        questionText: "Do you own or rent?",
+        type: 'question',
+        options: [
+            { label: 'Own', comment: 'Owning a home gives you equity options in retirement planning.' },
+            { label: 'Rent', comment: 'Renting offers flexibility—let’s look for affordable retirement locations.' },
+            { label: 'Other', comment: 'Let’s understand your housing situation to build an accurate plan.' }
+        ]
+    },
+    {
+        question_number: 4,
+        questionText: "What is your retirement goal today?",
+        type: 'question',
+        options: [
+            { label: 'I am not sure; I just want to explore discreet expert retirement advice', comment: 'No worries—we’ll guide you step-by-step toward smart retirement decisions.' },
+            { label: 'I am interested in finding places I can afford in retirement', comment: 'Great! We’ll help you identify affordable, retirement-friendly locations.' },
+            { label: 'I am interested in knowing about money management for retirement', comment: 'Smart move—let’s ensure your money lasts as long as you do.' }
+        ]
+    },
+    {
+        question_number: 5,
+        questionText: "How much have you saved for retirement so far?",
+        type: 'question',
+        options: [
+            { label: 'Less than $100,000', comment: 'You still have time—catch-up contributions and disciplined investing can help close the gap.' },
+            { label: '$100,000 – $300,000', comment: 'You’re building momentum—now is the time to fine-tune your plan and avoid large setbacks.' },
+            { label: '$300,000 – $700,000', comment: 'You\'re making strong progress—now focus on preserving and optimizing that wealth.' },
+            { label: 'Over $700,000', comment: 'Excellent work! Be sure your income strategy and estate planning are equally solid.' }
+        ]
+    },
+    {
+        question_number: 6,
+        questionText: "Have you estimated how long your retirement savings will last?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I’ve modeled it out', comment: 'Excellent! That clarity helps you make confident decisions about retirement timing and spending.' },
+            { label: 'I have a rough idea', comment: 'A good beginning—fine-tuning those numbers will increase your confidence.' },
+            { label: 'No, not really', comment: 'Now is the time to get serious—consider using online tools or talking to an advisor.' },
+            { label: 'I don\'t know where to start', comment: 'No worries—there are simple calculators that can help you take the first step.' }
+        ]
+    },
+    {
+        question_number: 7,
+        questionText: "Are you taking advantage of catch-up contributions in your 401(k) or IRA?",
+        type: 'question',
+        options: [
+            { label: 'Yes, every year', comment: 'Great! Catch-up contributions can significantly boost your nest egg in this decade.' },
+            { label: 'I just started', comment: 'Good move—stay consistent to maximize this opportunity.' },
+            { label: 'Not yet, but planning to', comment: 'You still have time—adding even a bit more can make a big difference.' },
+            { label: 'I wasn’t aware of this', comment: 'This is worth exploring—those extra contributions are designed for your stage of life.' }
+        ]
+    },
+    {
+        question_number: 8,
+        questionText: "Do you plan to retire at 60, 65, 67—or work longer?",
+        type: 'question',
+        options: [
+            { label: 'I plan to retire before 60', comment: 'Early retirement is exciting—make sure your savings can support a longer retirement.' },
+            { label: 'Between 60 and 65', comment: 'That’s a common window—refining your income plan will help ease the transition.' },
+            { label: 'At 67', comment: 'Delaying to full retirement age increases your Social Security benefits.' },
+            { label: 'Later than 67', comment: 'Working longer can ease pressure on savings and increase your future security.' }
+        ]
+    },
+    {
+        question_number: 9,
+        questionText: "Have you considered delaying Social Security for higher benefits?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I plan to delay', comment: 'Smart move—delaying can increase your monthly benefit significantly.' },
+            { label: 'Maybe—I’m still deciding', comment: 'Take time to weigh the pros and cons—it depends on your income needs and health.' },
+            { label: 'No, I plan to take it as early as possible', comment: 'That’s okay—just make sure you understand the long-term trade-offs.' },
+            { label: 'I’m not sure how it works', comment: 'Understanding your claiming strategy is key—SSA.gov has great tools to help.' }
+        ]
+    },
+	  {
+        question_number: 10,
+        questionText: "Do you know your expected monthly expenses in retirement?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I’ve calculated them', comment: 'That’s excellent—knowing your budget is crucial for peace of mind.' },
+            { label: 'I have an estimate', comment: 'A rough estimate is helpful, but refining it will improve your planning.' },
+            { label: 'Not really', comment: 'Start tracking your current spending—it’s a helpful baseline.' },
+            { label: 'I haven’t thought about it', comment: 'Creating a retirement budget now can prevent surprises later.' }
+        ]
+    },
+    {
+        question_number: 11,
+        questionText: "Have you factored healthcare and Medicare premiums into your retirement budget?",
+        type: 'question',
+        options: [
+            { label: 'Yes, fully accounted for', comment: 'Great! Healthcare is one of the biggest retirement costs.' },
+            { label: 'Partially considered', comment: 'Good first step—be sure to understand Medicare Parts B, D, and supplemental options.' },
+            { label: 'No, not yet', comment: 'Consider this soon—it can significantly impact your expenses.' },
+            { label: 'I didn’t realize I should', comment: 'Health costs can add up—factoring them in now helps avoid financial stress later.' }
+        ]
+    },
+    {
+        question_number: 12,
+        questionText: "Do you plan to downsize, relocate, or stay in your current home?",
+        type: 'question',
+        options: [
+            { label: 'Stay in current home', comment: 'Make sure your home is affordable and accessible for your retirement years.' },
+            { label: 'Downsize locally', comment: 'Downsizing can free up equity and reduce expenses.' },
+            { label: 'Relocate to a new city/state', comment: 'Relocating can be a great lifestyle shift—just factor in taxes and healthcare access.' },
+            { label: 'Still deciding', comment: 'Exploring options now gives you time to plan wisely and avoid rushed decisions.' }
+        ]
+    },
+    {
+        question_number: 13,
+        questionText: "Are your investments too aggressive, too conservative, or appropriately balanced?",
+        type: 'question',
+        options: [
+            { label: 'Too aggressive', comment: 'Consider dialing back risk as you approach retirement to protect your savings.' },
+            { label: 'Too conservative', comment: 'You may want to shift toward more growth if your plan falls short.' },
+            { label: 'Balanced for my age', comment: 'Well done—balance is key for sustainable withdrawals.' },
+            { label: 'I’m not sure', comment: 'A portfolio review can give you confidence and uncover opportunities.' }
+        ]
+    },
+    {
+        question_number: 14,
+        questionText: "Do you have a retirement income strategy (withdrawal plan, annuities, etc.)?",
+        type: 'question',
+        options: [
+            { label: 'Yes, a full income plan', comment: 'Excellent—structured income planning brings predictability to retirement.' },
+            { label: 'Working on it', comment: 'You’re on the right path—just make sure it aligns with your budget and goals.' },
+            { label: 'Not yet', comment: 'Now is a good time to start—it can reduce your stress later.' },
+            { label: 'I don’t know what that means', comment: 'This is essential—consider meeting with a planner or using retirement tools online.' }
+        ]
+    },
+    {
+        question_number: 15,
+        questionText: "Have you updated or reviewed your will, trust, and beneficiary designations in the last 5 years?",
+        type: 'question',
+        options: [
+            { label: 'Yes, recently updated', comment: 'Fantastic—your legacy planning is up to date.' },
+            { label: 'Partially updated', comment: 'Good start—make sure everything aligns with your current wishes.' },
+            { label: 'No, not yet', comment: 'Consider prioritizing this—it protects your family and assets.' },
+            { label: 'I don’t have any of those', comment: 'Creating these documents is a gift of clarity for your loved ones.' }
+        ]
+    }
+];
+
+const questionsData_60_65 = [
+  {
+    question_number: 1,
+    questionText: "Are you retired?",
+    type: 'question',
+    options: [
+      { label: 'Yes, not working', comment: 'Wonderful! Let’s focus on maximizing income and minimizing stress.' },
+      { label: 'No, working full-time', comment: 'Let’s prepare your retirement timeline and secure your financial future.' },
+      { label: 'Working part-time', comment: 'Part-time work offers flexibility—let’s plan around this mixed income.' }
+    ]
+  },
+  {
+    question_number: 2,
+    questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
+    type: 'statement',
+    options: [],
+    free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+  },
+  {
+    question_number: 3,
+    questionText: "Do you own or rent?",
+    type: 'question',
+    options: [
+      { label: 'Own', comment: 'Owning a home gives you equity options in retirement planning.' },
+      { label: 'Rent', comment: 'Renting offers flexibility—let’s look for affordable retirement locations.' },
+      { label: 'Other', comment: 'Let’s understand your housing situation to build an accurate plan.' }
+    ]
+  },
+  {
+    question_number: 4,
+    questionText: "What is your retirement goal today?",
+    type: 'question',
+    options: [
+      { label: 'I am not sure; I just want to explore discreet expert retirement advice', comment: 'No worries—we’ll guide you step-by-step toward smart retirement decisions.' },
+      { label: 'I am interested in finding places I can afford in retirement', comment: 'Great! We’ll help you identify affordable, retirement-friendly locations.' },
+      { label: 'I am interested in knowing about money management for retirement', comment: 'Smart move—let’s ensure your money lasts as long as you do.' }
+    ]
+  },
+  {
+    question_number: 5,
+    questionText: "How much have you saved for retirement so far?",
+    type: 'question',
+    options: [
+      { label: 'Less than $100,000', comment: 'You still have time—catch-up contributions and disciplined investing can help close the gap.' },
+      { label: '$100,000 – $300,000', comment: 'You’re building momentum—now is the time to fine-tune your plan and avoid large setbacks.' },
+      { label: '$300,000 – $700,000', comment: 'You\'re making strong progress—now focus on preserving and optimizing that wealth.' },
+      { label: 'Over $700,000', comment: 'Excellent work! Be sure your income strategy and estate planning are equally solid.' }
+    ]
+  },
+  {
+    question_number: 6,
+    questionText: "Have you estimated how long your retirement savings will last?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I’ve modeled it out', comment: 'Excellent! That clarity helps you make confident decisions about retirement timing and spending.' },
+      { label: 'I have a rough idea', comment: 'A good beginning—fine-tuning those numbers will increase your confidence.' },
+      { label: 'No, not really', comment: 'Now is the time to get serious—consider using online tools or talking to an advisor.' },
+      { label: 'I don’t know where to start', comment: 'No worries—there are simple calculators that can help you take the first step.' }
+    ]
+  },
+  {
+    question_number: 7,
+    questionText: "Are you taking advantage of catch-up contributions in your 401(k) or IRA?",
+    type: 'question',
+    options: [
+      { label: 'Yes, every year', comment: 'Great! Catch-up contributions can significantly boost your nest egg in this decade.' },
+      { label: 'I just started', comment: 'Good move—stay consistent to maximize this opportunity.' },
+      { label: 'Not yet, but planning to', comment: 'You still have time—adding even a bit more can make a big difference.' },
+      { label: 'I wasn’t aware of this', comment: 'This is worth exploring—those extra contributions are designed for your stage of life.' }
+    ]
+  },
+  {
+    question_number: 8,
+    questionText: "Do you plan to retire at 60, 65, 67—or work longer?",
+    type: 'question',
+    options: [
+      { label: 'I plan to retire before 60', comment: 'Early retirement is exciting—make sure your savings can support a longer retirement.' },
+      { label: 'Between 60 and 65', comment: 'That’s a common window—refining your income plan will help ease the transition.' },
+      { label: 'At 67', comment: 'Delaying to full retirement age increases your Social Security benefits.' },
+      { label: 'Later than 67', comment: 'Working longer can ease pressure on savings and increase your future security.' }
+    ]
+  },
+  {
+    question_number: 9,
+    questionText: "Have you considered delaying Social Security for higher benefits?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I plan to delay', comment: 'Smart move—delaying can increase your monthly benefit significantly.' },
+      { label: 'Maybe—I’m still deciding', comment: 'Take time to weigh the pros and cons—it depends on your income needs and health.' },
+      { label: 'No, I plan to take it as early as possible', comment: 'That’s okay—just make sure you understand the long-term trade-offs.' },
+      { label: 'I’m not sure how it works', comment: 'Understanding your claiming strategy is key—SSA.gov has great tools to help.' }
+    ]
+  },
+  {
+    question_number: 10,
+    questionText: "Do you know your expected monthly expenses in retirement?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I’ve calculated them', comment: 'That’s excellent—knowing your budget is crucial for peace of mind.' },
+      { label: 'I have an estimate', comment: 'A rough estimate is helpful, but refining it will improve your planning.' },
+      { label: 'Not really', comment: 'Start tracking your current spending—it’s a helpful baseline.' },
+      { label: 'I haven’t thought about it', comment: 'Creating a retirement budget now can prevent surprises later.' }
+    ]
+  },
+  {
+    question_number: 11,
+    questionText: "Have you factored healthcare and Medicare premiums into your retirement budget?",
+    type: 'question',
+    options: [
+      { label: 'Yes, fully accounted for', comment: 'Great! Healthcare is one of the biggest retirement costs.' },
+      { label: 'Partially considered', comment: 'Good first step—be sure to understand Medicare Parts B, D, and supplemental options.' },
+      { label: 'No, not yet', comment: 'Consider this soon—it can significantly impact your expenses.' },
+      { label: 'I didn’t realize I should', comment: 'Health costs can add up—factoring them in now helps avoid financial stress later.' }
+    ]
+  },
+  {
+    question_number: 12,
+    questionText: "Do you plan to downsize, relocate, or stay in your current home?",
+    type: 'question',
+    options: [
+      { label: 'Stay in current home', comment: 'Make sure your home is affordable and accessible for your retirement years.' },
+      { label: 'Downsize locally', comment: 'Downsizing can free up equity and reduce expenses.' },
+      { label: 'Relocate to a new city/state', comment: 'Relocating can be a great lifestyle shift—just factor in taxes and healthcare access.' },
+      { label: 'Still deciding', comment: 'Exploring options now gives you time to plan wisely and avoid rushed decisions.' }
+    ]
+  },
+  {
+    question_number: 13,
+    questionText: "Are your investments too aggressive, too conservative, or appropriately balanced?",
+    type: 'question',
+    options: [
+      { label: 'Too aggressive', comment: 'Consider dialing back risk as you approach retirement to protect your savings.' },
+      { label: 'Too conservative', comment: 'You may want to shift toward more growth if your plan falls short.' },
+      { label: 'Balanced for my age', comment: 'Well done—balance is key for sustainable withdrawals.' },
+      { label: 'I’m not sure', comment: 'A portfolio review can give you confidence and uncover opportunities.' }
+    ]
+  },
+  {
+    question_number: 14,
+    questionText: "Do you have a retirement income strategy (withdrawal plan, annuities, etc.)?",
+    type: 'question',
+    options: [
+      { label: 'Yes, a full income plan', comment: 'Excellent—structured income planning brings predictability to retirement.' },
+      { label: 'Working on it', comment: 'You’re on the right path—just make sure it aligns with your budget and goals.' },
+      { label: 'Not yet', comment: 'Now is a good time to start—it can reduce your stress later.' },
+      { label: 'I don’t know what that means', comment: 'This is essential—consider meeting with a planner or using retirement tools online.' }
+    ]
+  },
+  {
+    question_number: 15,
+    questionText: "Have you updated or reviewed your will, trust, and beneficiary designations in the last 5 years?",
+    type: 'question',
+    options: [
+      { label: 'Yes, recently updated', comment: 'Fantastic—your legacy planning is up to date.' },
+      { label: 'Partially updated', comment: 'Good start—make sure everything aligns with your current wishes.' },
+      { label: 'No, not yet', comment: 'Consider prioritizing this—it protects your family and assets.' },
+      { label: 'I don’t have any of those', comment: 'Creating these documents is a gift of clarity for your loved ones.' }
+    ]
+  }
+];
+
+const questionsData_66_79 = [
+    {
+        question_number: 1,
+        questionText: "Are you retired?",
+        type: 'question',
+        options: [
+            { label: 'Yes, not working', comment: 'Wonderful! Let’s focus on maximizing income and minimizing stress.' },
+            { label: 'No, working full-time', comment: 'Let’s prepare your retirement timeline and secure your financial future.' },
+            { label: 'Working part-time', comment: 'Part-time work offers flexibility—let’s plan around this mixed income.' }
+        ]
+    },
+    {
+        question_number: 2,
+        questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
+        type: 'statement',
+        options: [],
+        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+    },
+    {
+        question_number: 3,
+        questionText: "Do you own or rent?",
+        type: 'question',
+        options: [
+            { label: 'Own', comment: 'Owning a home gives you equity options in retirement planning.' },
+            { label: 'Rent', comment: 'Renting offers flexibility—let’s look for affordable retirement locations.' },
+            { label: 'Other', comment: 'Let’s understand your housing situation to build an accurate plan.' }
+        ]
+    },
+    {
+        question_number: 4,
+        questionText: "What is your retirement goal today?",
+        type: 'question',
+        options: [
+            { label: 'I am not sure; I just want to explore discreet expert retirement advice', comment: 'No worries—we’ll guide you step-by-step toward smart retirement decisions.' },
+            { label: 'I am interested in finding places I can afford in retirement', comment: 'Great! We’ll help you identify affordable, retirement-friendly locations.' },
+            { label: 'I am interested in knowing about money management for retirement', comment: 'Smart move—let’s ensure your money lasts as long as you do.' }
+        ]
+    },
+    {
+        question_number: 5,
+        questionText: "How much have you saved for retirement so far?",
+        type: 'question',
+        options: [
+            { label: 'Less than $100,000', comment: 'You still have time—catch-up contributions and disciplined investing can help close the gap.' },
+            { label: '$100,000 – $300,000', comment: 'You’re building momentum—now is the time to fine-tune your plan and avoid large setbacks.' },
+            { label: '$300,000 – $700,000', comment: "You're making strong progress—now focus on preserving and optimizing that wealth." },
+            { label: 'Over $700,000', comment: 'Excellent work! Be sure your income strategy and estate planning are equally solid.' }
+        ]
+    },
+    {
+        question_number: 6,
+        questionText: "Have you estimated how long your retirement savings will last?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I’ve modeled it out', comment: 'Excellent! That clarity helps you make confident decisions about retirement timing and spending.' },
+            { label: 'I have a rough idea', comment: 'A good beginning—fine-tuning those numbers will increase your confidence.' },
+            { label: 'No, not really', comment: 'Now is the time to get serious—consider using online tools or talking to an advisor.' },
+            { label: "I don't know where to start", comment: 'No worries—there are simple calculators that can help you take the first step.' }
+        ]
+    },
+    {
+        question_number: 7,
+        questionText: "Are you taking advantage of catch-up contributions in your 401(k) or IRA?",
+        type: 'question',
+        options: [
+            { label: 'Yes, every year', comment: 'Great! Catch-up contributions can significantly boost your nest egg in this decade.' },
+            { label: 'I just started', comment: 'Good move—stay consistent to maximize this opportunity.' },
+            { label: 'Not yet, but planning to', comment: 'You still have time—adding even a bit more can make a big difference.' },
+            { label: 'I wasn’t aware of this', comment: 'This is worth exploring—those extra contributions are designed for your stage of life.' }
+        ]
+    },
+    {
+        question_number: 8,
+        questionText: "Do you plan to retire at 60, 65, 67—or work longer?",
+        type: 'question',
+        options: [
+            { label: 'I plan to retire before 60', comment: 'Early retirement is exciting—make sure your savings can support a longer retirement.' },
+            { label: 'Between 60 and 65', comment: 'That’s a common window—refining your income plan will help ease the transition.' },
+            { label: 'At 67', comment: 'Delaying to full retirement age increases your Social Security benefits.' },
+            { label: 'Later than 67', comment: 'Working longer can ease pressure on savings and increase your future security.' }
+        ]
+    },
+    {
+        question_number: 9,
+        questionText: "Have you considered delaying Social Security for higher benefits?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I plan to delay', comment: 'Smart move—delaying can increase your monthly benefit significantly.' },
+            { label: 'Maybe—I’m still deciding', comment: 'Take time to weigh the pros and cons—it depends on your income needs and health.' },
+            { label: 'No, I plan to take it as early as possible', comment: 'That’s okay—just make sure you understand the long-term trade-offs.' },
+            { label: 'I’m not sure how it works', comment: 'Understanding your claiming strategy is key—SSA.gov has great tools to help.' }
+        ]
+    },
+    {
+        question_number: 10,
+        questionText: "Do you know your expected monthly expenses in retirement?",
+        type: 'question',
+        options: [
+            { label: 'Yes, I’ve calculated them', comment: 'That’s excellent—knowing your budget is crucial for peace of mind.' },
+            { label: 'I have an estimate', comment: 'A rough estimate is helpful, but refining it will improve your planning.' },
+            { label: 'Not really', comment: 'Start tracking your current spending—it’s a helpful baseline.' },
+            { label: 'I haven’t thought about it', comment: 'Creating a retirement budget now can prevent surprises later.' }
+        ]
+    },
+    {
+        question_number: 11,
+        questionText: "Have you factored healthcare and Medicare premiums into your retirement budget?",
+        type: 'question',
+        options: [
+            { label: 'Yes, fully accounted for', comment: 'Great! Healthcare is one of the biggest retirement costs.' },
+            { label: 'Partially considered', comment: 'Good first step—be sure to understand Medicare Parts B, D, and supplemental options.' },
+            { label: 'No, not yet', comment: 'Consider this soon—it can significantly impact your expenses.' },
+            { label: 'I didn’t realize I should', comment: 'Health costs can add up—factoring them in now helps avoid financial stress later.' }
+        ]
+    },
+    {
+        question_number: 12,
+        questionText: "Do you plan to downsize, relocate, or stay in your current home?",
+        type: 'question',
+        options: [
+            { label: 'Stay in current home', comment: 'Make sure your home is affordable and accessible for your retirement years.' },
+            { label: 'Downsize locally', comment: 'Downsizing can free up equity and reduce expenses.' },
+            { label: 'Relocate to a new city/state', comment: 'Relocating can be a great lifestyle shift—just factor in taxes and healthcare access.' },
+            { label: 'Still deciding', comment: 'Exploring options now gives you time to plan wisely and avoid rushed decisions.' }
+        ]
+    },
+    {
+        question_number: 13,
+        questionText: "Are your investments too aggressive, too conservative, or appropriately balanced?",
+        type: 'question',
+        options: [
+            { label: 'Too aggressive', comment: 'Consider dialing back risk as you approach retirement to protect your savings.' },
+            { label: 'Too conservative', comment: 'You may want to shift toward more growth if your plan falls short.' },
+            { label: 'Balanced for my age', comment: 'Well done—balance is key for sustainable withdrawals.' },
+            { label: 'I’m not sure', comment: 'A portfolio review can give you confidence and uncover opportunities.' }
+        ]
+    },
+    {
+        question_number: 14,
+        questionText: "Do you have a retirement income strategy (withdrawal plan, annuities, etc.)?",
+        type: 'question',
+        options: [
+            { label: 'Yes, a full income plan', comment: 'Excellent—structured income planning brings predictability to retirement.' },
+            { label: 'Working on it', comment: 'You’re on the right path—just make sure it aligns with your budget and goals.' },
+            { label: 'Not yet', comment: 'Now is a good time to start—it can reduce your stress later.' },
+            { label: 'I don’t know what that means', comment: 'This is essential—consider meeting with a planner or using retirement tools online.' }
+        ]
+    },
+    {
+        question_number: 15,
+        questionText: "Have you updated or reviewed your will, trust, and beneficiary designations in the last 5 years?",
+        type: 'question',
+        options: [
+            { label: 'Yes, recently updated', comment: 'Fantastic—your legacy planning is up to date.' },
+            { label: 'Partially updated', comment: 'Good start—make sure everything aligns with your current wishes.' },
+            { label: 'No, not yet', comment: 'Consider prioritizing this—it protects your family and assets.' },
+            { label: 'I don’t have any of those', comment: 'Creating these documents is a gift of clarity for your loved ones.' }
+        ]
+    }
+];
+
+const questionsData_80_plus = [
+  {
+    question_number: 1,
+    questionText: "Are you retired?",
+    type: 'question',
+    options: [
+      { label: 'Yes, not working', comment: 'Wonderful! Let’s focus on maximizing income and minimizing stress.' },
+      { label: 'No, working full-time', comment: 'Let’s prepare your retirement timeline and secure your financial future.' },
+      { label: 'Working part-time', comment: 'Part-time work offers flexibility—let’s plan around this mixed income.' }
+    ]
+  },
+  {
+    question_number: 2,
+    questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
+    type: 'statement',
+    options: [],
+    free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+  },
+  {
+    question_number: 3,
+    questionText: "Do you own or rent?",
+    type: 'question',
+    options: [
+      { label: 'Own', comment: 'Owning a home gives you equity options in retirement planning.' },
+      { label: 'Rent', comment: 'Renting offers flexibility—let’s look for affordable retirement locations.' },
+      { label: 'Other', comment: 'Let’s understand your housing situation to build an accurate plan.' }
+    ]
+  },
+  {
+    question_number: 4,
+    questionText: "What is your retirement goal today?",
+    type: 'question',
+    options: [
+      { label: 'I am not sure; I just want to explore discreet expert retirement advice', comment: 'No worries—we’ll guide you step-by-step toward smart retirement decisions.' },
+      { label: 'I am interested in finding places I can afford in retirement', comment: 'Great! We’ll help you identify affordable, retirement-friendly locations.' },
+      { label: 'I am interested in knowing about money management for retirement', comment: 'Smart move—let’s ensure your money lasts as long as you do.' }
+    ]
+  },
+  {
+    question_number: 5,
+    questionText: "How much have you saved for retirement so far?",
+    type: 'question',
+    options: [
+      { label: 'Less than $100,000', comment: 'You still have time—catch-up contributions and disciplined investing can help close the gap.' },
+      { label: '$100,000 – $300,000', comment: 'You’re building momentum—now is the time to fine-tune your plan and avoid large setbacks.' },
+      { label: '$300,000 – $700,000', comment: "You're making strong progress—now focus on preserving and optimizing that wealth." },
+      { label: 'Over $700,000', comment: 'Excellent work! Be sure your income strategy and estate planning are equally solid.' }
+    ]
+  },
+  {
+    question_number: 6,
+    questionText: "Have you estimated how long your retirement savings will last?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I’ve modeled it out', comment: 'Excellent! That clarity helps you make confident decisions about retirement timing and spending.' },
+      { label: 'I have a rough idea', comment: 'A good beginning—fine-tuning those numbers will increase your confidence.' },
+      { label: 'No, not really', comment: 'Now is the time to get serious—consider using online tools or talking to an advisor.' },
+      { label: "I don't know where to start", comment: 'No worries—there are simple calculators that can help you take the first step.' }
+    ]
+  },
+  {
+    question_number: 7,
+    questionText: "Are you taking advantage of catch-up contributions in your 401(k) or IRA?",
+    type: 'question',
+    options: [
+      { label: 'Yes, every year', comment: 'Great! Catch-up contributions can significantly boost your nest egg in this decade.' },
+      { label: 'I just started', comment: 'Good move—stay consistent to maximize this opportunity.' },
+      { label: 'Not yet, but planning to', comment: 'You still have time—adding even a bit more can make a big difference.' },
+      { label: 'I wasn’t aware of this', comment: 'This is worth exploring—those extra contributions are designed for your stage of life.' }
+    ]
+  },
+  {
+    question_number: 8,
+    questionText: "Do you plan to retire at 60, 65, 67—or work longer?",
+    type: 'question',
+    options: [
+      { label: 'I plan to retire before 60', comment: 'Early retirement is exciting—make sure your savings can support a longer retirement.' },
+      { label: 'Between 60 and 65', comment: 'That’s a common window—refining your income plan will help ease the transition.' },
+      { label: 'At 67', comment: 'Delaying to full retirement age increases your Social Security benefits.' },
+      { label: 'Later than 67', comment: 'Working longer can ease pressure on savings and increase your future security.' }
+    ]
+  },
+  {
+    question_number: 9,
+    questionText: "Have you considered delaying Social Security for higher benefits?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I plan to delay', comment: 'Smart move—delaying can increase your monthly benefit significantly.' },
+      { label: 'Maybe—I’m still deciding', comment: 'Take time to weigh the pros and cons—it depends on your income needs and health.' },
+      { label: 'No, I plan to take it as early as possible', comment: 'That’s okay—just make sure you understand the long-term trade-offs.' },
+      { label: 'I’m not sure how it works', comment: 'Understanding your claiming strategy is key—SSA.gov has great tools to help.' }
+    ]
+  },
+  {
+    question_number: 10,
+    questionText: "Do you know your expected monthly expenses in retirement?",
+    type: 'question',
+    options: [
+      { label: 'Yes, I’ve calculated them', comment: 'That’s excellent—knowing your budget is crucial for peace of mind.' },
+      { label: 'I have an estimate', comment: 'A rough estimate is helpful, but refining it will improve your planning.' },
+      { label: 'Not really', comment: 'Start tracking your current spending—it’s a helpful baseline.' },
+      { label: 'I haven’t thought about it', comment: 'Creating a retirement budget now can prevent surprises later.' }
+    ]
+  },
+  {
+    question_number: 11,
+    questionText: "Have you factored healthcare and Medicare premiums into your retirement budget?",
+    type: 'question',
+    options: [
+      { label: 'Yes, fully accounted for', comment: 'Great! Healthcare is one of the biggest retirement costs.' },
+      { label: 'Partially considered', comment: 'Good first step—be sure to understand Medicare Parts B, D, and supplemental options.' },
+      { label: 'No, not yet', comment: 'Consider this soon—it can significantly impact your expenses.' },
+      { label: 'I didn’t realize I should', comment: 'Health costs can add up—factoring them in now helps avoid financial stress later.' }
+    ]
+  },
+  {
+    question_number: 12,
+    questionText: "Do you plan to downsize, relocate, or stay in your current home?",
+    type: 'question',
+    options: [
+      { label: 'Stay in current home', comment: 'Make sure your home is affordable and accessible for your retirement years.' },
+      { label: 'Downsize locally', comment: 'Downsizing can free up equity and reduce expenses.' },
+      { label: 'Relocate to a new city/state', comment: 'Relocating can be a great lifestyle shift—just factor in taxes and healthcare access.' },
+      { label: 'Still deciding', comment: 'Exploring options now gives you time to plan wisely and avoid rushed decisions.' }
+    ]
+  },
+  {
+    question_number: 13,
+    questionText: "Are your investments too aggressive, too conservative, or appropriately balanced?",
+    type: 'question',
+    options: [
+      { label: 'Too aggressive', comment: 'Consider dialing back risk as you approach retirement to protect your savings.' },
+      { label: 'Too conservative', comment: 'You may want to shift toward more growth if your plan falls short.' },
+      { label: 'Balanced for my age', comment: 'Well done—balance is key for sustainable withdrawals.' },
+      { label: 'I’m not sure', comment: 'A portfolio review can give you confidence and uncover opportunities.' }
+    ]
+  },
+  {
+    question_number: 14,
+    questionText: "Do you have a retirement income strategy (withdrawal plan, annuities, etc.)?",
+    type: 'question',
+    options: [
+      { label: 'Yes, a full income plan', comment: 'Excellent—structured income planning brings predictability to retirement.' },
+      { label: 'Working on it', comment: 'You’re on the right path—just make sure it aligns with your budget and goals.' },
+      { label: 'Not yet', comment: 'Now is a good time to start—it can reduce your stress later.' },
+      { label: 'I don’t know what that means', comment: 'This is essential—consider meeting with a planner or using retirement tools online.' }
+    ]
+  },
+  {
+    question_number: 15,
+    questionText: "Have you updated or reviewed your will, trust, and beneficiary designations in the last 5 years?",
+    type: 'question',
+    options: [
+      { label: 'Yes, recently updated', comment: 'Fantastic—your legacy planning is up to date.' },
+      { label: 'Partially updated', comment: 'Good start—make sure everything aligns with your current wishes.' },
+      { label: 'No, not yet', comment: 'Consider prioritizing this—it protects your family and assets.' },
+      { label: 'I don’t have any of those', comment: 'Creating these documents is a gift of clarity for your loved ones.' }
+    ]
+  }
+];
+
+
 const seedQuestions = async (dataArray, model, label) => {
     for (const question of dataArray) {
         const exists = await model.findOne({ questionText: question.questionText });
@@ -344,6 +993,12 @@ const seed = async () => {
 
         await seedQuestions(lessThan40Data, LessThan40Model, 'LessThan40');
         await seedQuestions(questionsData_40_49, Group40to49Model, '40-49');
+        await seedQuestions(questionsData_50_59, Group50to59Model, '50-59');
+        await seedQuestions(questionsData_60_65, Group60to65Model, '60-65');
+        await seedQuestions(questionsData_66_79, Group66to79Model, '60-79');
+        await seedQuestions(questionsData_80_plus, Group80plus, '80+');
+        
+        
 
         console.log('Seeding complete.');
     } catch (error) {
