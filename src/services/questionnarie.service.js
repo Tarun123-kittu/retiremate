@@ -6,7 +6,7 @@ const Group40to49Model = require("../models/questions-40to49.model")
 
 const getPrimeQuestions = async () => {
     try {
-        let questions = await primeQuestionsModel.find().select('questionText type options')
+        let questions = await primeQuestionsModel.find().select('questionText type options questionText')
         return questions
     } catch (error) {
         throw error.message
