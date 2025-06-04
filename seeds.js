@@ -1,17 +1,12 @@
 const mongoose = require('mongoose');
 const Question = require('./src/models/questions-prime.model');
-const LessThan40Model = require('./src/models/questions-lessthan40.model');
-const Group40to49Model = require('./src/models/questions-40to49.model');
-const Group50to59Model = require('./src/models/questions-50to59.model')
-const Group60to65Model = require('./src/models/questions-60to65.model')
-const Group66to79Model = require('./src/models/questions-66to79.model')
-const Group80plus = require('./src/models/questions-80plus.model')
-
+const QuestionsByAgeGroupModel = require('./src/models/questions-byAgeGroup.model');
 
 const MONGODB_URI = 'mongodb://localhost:27017/Retiremate';
 
 const lessThan40Data = [
     {
+        
         question_number: 1,
         questionText: "Are you retired?",
         type: 'question',
@@ -25,8 +20,9 @@ const lessThan40Data = [
         question_number: 2,
         questionText: "Where do you currently live? Please enter your zip code",
         type: 'statement',
-        options: [],
-        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+        options: [
+             { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+        ],
     },
     {
         question_number: 3,
@@ -174,8 +170,9 @@ const questionsData_40_49 = [
         question_number: 2,
         questionText: "Where do you currently live? Please enter your zip code",
         type: 'statement',
-        options: [],
-        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+        options: [
+            { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+        ],
     },
     {
         question_number: 3,
@@ -323,8 +320,9 @@ const questionsData_50_59 = [
         question_number: 2,
         questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
         type: 'statement',
-        options: [],
-        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+        options: [
+             { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+        ],
     },
     {
         question_number: 3,
@@ -484,8 +482,9 @@ const questionsData_60_65 = [
     question_number: 2,
     questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
     type: 'statement',
-    options: [],
-    free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+    options: [
+          { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+    ],
   },
   {
     question_number: 3,
@@ -645,8 +644,9 @@ const questionsData_66_79 = [
         question_number: 2,
         questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
         type: 'statement',
-        options: [],
-        free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+        options: [
+              { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+        ],
     },
     {
         question_number: 3,
@@ -806,8 +806,9 @@ const questionsData_80_plus = [
     question_number: 2,
     questionText: "Where do you currently live? Please be as specific as possible (Address, Zip Code, Neighborhood, City, or State)",
     type: 'statement',
-    options: [],
-    free_text_comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.'
+    options: [
+         { label: '(Free Text)', comment: 'This helps tailor advice based on cost of living, taxes, and healthcare access in your area.' },
+    ],
   },
   {
     question_number: 3,
@@ -952,57 +953,64 @@ const questionsData_80_plus = [
   }
 ];
 
+// Common prime question
+const seedPrimeQuestion = async () => {
+    const exists = await Question.findOne({ questionText: 'How old are you?' });
 
-const seedQuestions = async (dataArray, model, label) => {
-    for (const question of dataArray) {
-        const exists = await model.findOne({ questionText: question.questionText });
-        if (!exists) {
-            await model.create(question);
-            console.log(`Seeded ${label}: "${question.questionText}"`);
-        } else {
-            console.log(`Skipped ${label}: "${question.questionText}" already exists.`);
-        }
+    if (!exists) {
+        await Question.create({
+            questionText: 'How old are you?',
+            type: 'question',
+            options: [
+                { value: 'less_than_40', label: 'Less than 40', comment: 'Great! Starting early gives you the best chance to plan ahead.' },
+                { value: '40_49', label: '40-49', comment: 'You’re in your prime planning years—let’s make the most of it.' },
+                { value: '50_59', label: '50-59', comment: 'You’re approaching retirement age—perfect time to finalize your plan.' },
+                { value: '60_65', label: '60-65', comment: 'You may already be retired or very close—let’s refine your strategy.' },
+                { value: '66_79', label: '66-79', comment: 'You\'re likely enjoying retirement—let’s make sure your plan is sustainable.' },
+                { value: '80+', label: '80+', comment: 'Your experience is valuable—let’s ensure comfort and legacy planning.' }
+            ],
+            system_greetings: [
+                'Welcome to Retiremate !!',
+                'I am John, your trusted advisor on retirement planning',
+                'I am going to guide you over a simple conversation'
+            ]
+        });
+        console.log('Seeded: "How old are you?"');
+    } else {
+        console.log('Skipped: "How old are you?" already exists.');
     }
 };
 
+// Group seeding function
+const seedGroupedQuestions = async (value, questionsData) => {
+    const exists = await QuestionsByAgeGroupModel.findOne({ value });
+
+    if (!exists) {
+        await QuestionsByAgeGroupModel.create({ value, questions: questionsData });
+        console.log(`Seeded group: ${value}`);
+    } else {
+        console.log(`Skipped group: ${value} already exists.`);
+    }
+};
+
+// Entry point
 const seed = async () => {
     try {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
 
-        const existingCommon = await Question.findOne({ questionText: 'How old are you?' });
-        if (!existingCommon) {
-            const commonQuestion = new Question({
-                questionText: 'How old are you?',
-                type: 'question',
-                options: [
-                    { value: 'less_than_40', label: 'Less than 40', comment: 'Great! Starting early gives you the best chance to plan ahead.' },
-                    { value: '40_49', label: '40-49', comment: 'You’re in your prime planning years—let’s make the most of it.' },
-                    { value: '50_59', label: '50-59', comment: 'You’re approaching retirement age—perfect time to finalize your plan.' },
-                    { value: '60_65', label: '60-65', comment: 'You may already be retired or very close—let’s refine your strategy.' },
-                    { value: '66_79', label: '66-79', comment: 'You\'re likely enjoying retirement—let’s make sure your plan is sustainable.' },
-                    { value: '80_plus', label: '80+', comment: 'Your experience is valuable—let’s ensure comfort and legacy planning.' }
-                ],
-                system_greetings:['Welcome to Retiremate !!','I am John , your trusted advisor on retirement planning','I am going to guide you over a simple conversation']
-            });
-            await commonQuestion.save();
-            console.log('Seeded: "How old are you?"');
-        } else {
-            console.log('Skipped: "How old are you?" already exists.');
-        }
+        await seedPrimeQuestion();
 
-        await seedQuestions(lessThan40Data, LessThan40Model, 'LessThan40');
-        await seedQuestions(questionsData_40_49, Group40to49Model, '40-49');
-        await seedQuestions(questionsData_50_59, Group50to59Model, '50-59');
-        await seedQuestions(questionsData_60_65, Group60to65Model, '60-65');
-        await seedQuestions(questionsData_66_79, Group66to79Model, '60-79');
-        await seedQuestions(questionsData_80_plus, Group80plus, '80+');
-        
-        
+        await seedGroupedQuestions('less_than_40', lessThan40Data);
+        await seedGroupedQuestions('40_49', questionsData_40_49);
+        await seedGroupedQuestions('50_59', questionsData_50_59);
+        await seedGroupedQuestions('60_65', questionsData_60_65);
+        await seedGroupedQuestions('66_79', questionsData_66_79);
+        await seedGroupedQuestions('80+', questionsData_80_plus);
 
-        console.log('Seeding complete.');
+        console.log(' All seeding completed successfully.');
     } catch (error) {
-        console.error('Error during seed:', error);
+        console.error(' Error during seeding:', error);
     } finally {
         mongoose.connection.close();
     }

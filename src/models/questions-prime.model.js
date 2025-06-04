@@ -4,7 +4,7 @@ const OptionSchema = new mongoose.Schema({
   value: { type: String, required: true },    
   label: { type: String, required: true },    
   comment: { type: String },
-});
+},{_id: false});
 
 const QuestionSchema = new mongoose.Schema({
   questionText: { type: String, required: true },

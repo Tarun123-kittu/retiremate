@@ -1,10 +1,5 @@
 const primeQuestionsModel = require('../models/questions-prime.model')
-const LessThan40Model = require("../models/questions-lessthan40.model")
-const Group40to49Model = require("../models/questions-40to49.model")
-const Group50to59Model = require('../models/questions-50to59.model')
-const Group60to65Model = require('../models/questions-60to65.model')
-const Group66to79Model = require('../models/questions-66to79.model')
-const Group80plus = require('../models/questions-80plus.model')
+const QuestionsByAgeGroupModel = require('../models/questions-byAgeGroup.model')
 
 
 
@@ -27,33 +22,40 @@ const getSystemGreetings = async () => {
 }
 
 
+const getValidPrimeValues = async () => {
+    try {
+        const primeQuestion = await primeQuestionsModel.findOne();
+        if (!primeQuestion || !primeQuestion.options) return [];
 
-const modelMap = {
-    less_than_40: LessThan40Model,
-    '40_49': Group40to49Model,
-    '50_59': Group50to59Model,
-    '60_65': Group60to65Model,
-    '66_79': Group66to79Model,
-    '80_plus': Group80plus
+        return primeQuestion.options.map(opt => opt.value);
+    } catch (err) {
+        console.error('Error fetching valid prime values:', err);
+        throw new Error('Failed to retrieve valid prime values.');
+    }
 };
+
 
 const getNextQuestion = async (prime_value, next_question) => {
     try {
-        const Model = modelMap[prime_value];
-        if (!Model) throw new Error("Model not found for prime value.");
+        const validValues = await getValidPrimeValues();
+        if (!validValues.includes(prime_value)) {
+            throw new Error('Invalid prime value.');
+        }
 
-        const question = await Model.findOne({ question_number: Number(next_question) });
+        const ageGroupDoc = await QuestionsByAgeGroupModel.findOne({ value: prime_value });
+        if (!ageGroupDoc) throw new Error("No questions found for this prime value.");
 
+        const question = ageGroupDoc.questions.find(q => q.question_number === Number(next_question));
         if (!question) throw new Error("Question not found.");
 
-        const totalQuestions = await Model.countDocuments(); 
-        const isLastQuestion = Number(next_question) >= totalQuestions;
+        const isLastQuestion = Number(next_question) >= ageGroupDoc.questions.length;
 
         return { question, isLastQuestion };
     } catch (error) {
-        throw error.message
+        console.error('Error in getNextQuestion:', error);
+        throw new Error(error.message || 'Failed to get next question.');
     }
-
 };
+
 
 module.exports = { getPrimeQuestions, getNextQuestion, getSystemGreetings };

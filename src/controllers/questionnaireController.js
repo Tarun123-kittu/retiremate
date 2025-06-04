@@ -27,13 +27,6 @@ exports.getNextQuestion = async (req, res) => {
         let { prime_value, next_question } = req.query
         if(!next_question){return res.status(400).json(errorResponse(resMessages.generalError.somethingWentWrong,"Please provide next question value"))}
 
-        let allowed_prime_values = ['less_than_40', '40_49', '50_59', '60_65', '66_79', '80_plus']
-        if (!allowed_prime_values.includes(prime_value)) {
-            return res.status(400).json(errorResponse(
-                resMessages.generalError.
-                somethingWentWrong, "Incorrect prime value. It must be one of:'less_than_40','40_49','50_59','60_65','66_79','80_plus'"))
-        }
-
         let {question,isLastQuestion} = await getNextQuestion(prime_value, next_question);
         return res.status(200).json(successResponse("Next question fetched successfully",{isLastQuestion,question}));
 
