@@ -9,7 +9,6 @@ const QuestionSchema = new mongoose.Schema({
     question_number: { type: Number },
     questionText: { type: String },
     type: { type: String, enum: ['question', 'statement'], default: 'question' },
-    free_text_comment: { type: String },
     options: [OptionSchema]
 }, { _id: false });
 

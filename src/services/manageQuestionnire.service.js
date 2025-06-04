@@ -85,12 +85,12 @@ exports.processValueFile = async (value, questionsMap) => {
     if (key === '__statements') continue;
 
     const questionNumber = parseInt(key.replace('Q', ''));
-    const { questionText, options } = questionsMap[key];
+    const { questionText, options,type } = questionsMap[key];
 
     updatedQuestions.push({
       question_number: questionNumber,
       questionText,
-      type: 'question',
+      type: type,
       options
     });
   }

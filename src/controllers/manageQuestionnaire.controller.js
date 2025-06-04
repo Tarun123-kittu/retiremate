@@ -8,9 +8,7 @@ const { processVendorFile, processValueFile } = require('../services/manageQuest
 
 exports.uploadFile = async (req, res) => {
   try {
-    if (!req.files || !req.files.file) {
-      return res.status(400).json(errorResponse('No file uploaded'));
-    }
+    if (!req.files || !req.files.file) { return res.status(400).json(errorResponse('No file uploaded')); }
 
     const file = req.files.file;
 
@@ -36,6 +34,9 @@ exports.uploadFile = async (req, res) => {
 
       if (!qid || !questionText) continue;
 
+      const isFreeText =  optionLabel.includes('(Free Text)');
+   
+
       if (qid.startsWith('STMT')) {
         if (!questionsMap['__statements']) questionsMap['__statements'] = [];
         questionsMap['__statements'].push(questionText);
@@ -43,8 +44,12 @@ exports.uploadFile = async (req, res) => {
         if (!questionsMap[qid]) {
           questionsMap[qid] = {
             questionText,
-            options: []
+            options: [],
+            type: isFreeText==true ? 'statement' : 'question'
           };
+        }
+        if (isFreeText) {
+          questionsMap[qid].type = 'statement';
         }
 
         questionsMap[qid].options.push({
@@ -65,7 +70,7 @@ exports.uploadFile = async (req, res) => {
     return res.status(200).json(successResponse('Questions successfully processed and updated.'))
 
   } catch (error) {
-    console.error("ERROR::",error);
+    console.error("ERROR::", error);
     return res.status(500).json(errorResponse(resMessages.generalError.somethingWentWrong, error.message))
   }
 };
