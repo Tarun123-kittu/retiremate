@@ -24,7 +24,7 @@ exports.getPrimeQuestions = async (req, res) => {
 
 exports.getNextQuestion = async (req, res) => {
     try {
-        let { prime_value, next_question } = req.query
+        let { prime_value, next_question } = req.body
         if(!next_question){return res.status(400).json(errorResponse(resMessages.generalError.somethingWentWrong,"Please provide next question value"))}
 
         let {question,isLastQuestion} = await getNextQuestion(prime_value, next_question);

@@ -5,7 +5,7 @@ const manageQuestionnire = require("../../controllers/manageQuestionnaire.contro
 
 //questionnaire
 router.get('/get-prime-questions',questionnarieController.getPrimeQuestions)
-router.get('/get-next-question',questionnarieController.getNextQuestion)
+router.post('/get-next-question',questionnarieController.getNextQuestion)
 
 //mangage questionnaire
 router.post('/uploadFile',manageQuestionnire.uploadFile)
