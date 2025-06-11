@@ -25,40 +25,56 @@ exports.uploadFile = async (req, res) => {
     const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
 
     const questionsMap = {};
+    const pendingStatements = {};
 
     for (const row of data) {
-      const qid = row['Q#'];
-      const questionText = row['Question'];
-      const optionLabel = row['Option'];
-      const comment = row['Comment'];
+      const qid = row['Q#']?.trim();
+      const questionText = row['Question']?.trim();
+      const optionLabel = row['Option']?.trim();
+      const comment = row['Comment']?.trim();
 
       if (!qid || !questionText) continue;
 
-      const isFreeText =  optionLabel.includes('(Free Text)');
-   
-
       if (qid.startsWith('STMT')) {
-        if (!questionsMap['__statements']) questionsMap['__statements'] = [];
-        questionsMap['__statements'].push(questionText);
+        const stmtNum = qid.match(/\d+/)?.[0];
+        if (!stmtNum) continue;
+
+        if (!pendingStatements[stmtNum]) pendingStatements[stmtNum] = [];
+        pendingStatements[stmtNum].push(questionText);
+
+        const questionKey = `Q${stmtNum}`;
+        if (questionsMap[questionKey]) {
+          questionsMap[questionKey].system_greeting = pendingStatements[stmtNum];
+        }
+
       } else if (qid.startsWith('Q')) {
+        const qNum = qid.match(/\d+/)?.[0];
+        const isFreeText = optionLabel?.includes('(Free Text)');
+
         if (!questionsMap[qid]) {
           questionsMap[qid] = {
+            quiz_no: qNum,
             questionText,
             options: [],
-            type: isFreeText==true ? 'statement' : 'question'
+            type: isFreeText ? 'statement' : 'question',
+            system_greeting: pendingStatements[qNum] || []
           };
         }
+
         if (isFreeText) {
           questionsMap[qid].type = 'statement';
         }
 
-        questionsMap[qid].options.push({
-          value: optionLabel.trim().replace(/[\s-]+/g, '_').toLowerCase(),
-          label: optionLabel,
-          comment: comment || ''
-        });
+        if (optionLabel || comment) {
+          questionsMap[qid].options.push({
+            value: optionLabel.replace(/[\s-]+/g, '_').toLowerCase(),
+            label: optionLabel,
+            comment: comment || ''
+          });
+        }
       }
     }
+
 
     if (file.name === 'VendorCommonQuestions.xlsx') {
       await processVendorFile(questionsMap);

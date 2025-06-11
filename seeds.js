@@ -959,10 +959,11 @@ const seedPrimeQuestion = async () => {
 
     if (!exists) {
         await Question.create({
+            quiz_no:1,
             questionText: 'How old are you?',
             type: 'question',
             options: [
-                { value: 'less_than_40', label: 'Less than 40', comment: 'Great! Starting early gives you the best chance to plan ahead.' },
+                { value: 'less_than_40', label: 'Less than 40', comment: 'Great! Starting early gives you the best chance to plan ahead.'},
                 { value: '40_49', label: '40-49', comment: 'You’re in your prime planning years—let’s make the most of it.' },
                 { value: '50_59', label: '50-59', comment: 'You’re approaching retirement age—perfect time to finalize your plan.' },
                 { value: '60_65', label: '60-65', comment: 'You may already be retired or very close—let’s refine your strategy.' },
@@ -974,6 +975,7 @@ const seedPrimeQuestion = async () => {
                 'I am John, your trusted advisor on retirement planning',
                 'I am going to guide you over a simple conversation'
             ]
+          
         });
         console.log('Seeded: "How old are you?"');
     } else {

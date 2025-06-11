@@ -7,7 +7,7 @@ const OptionSchema = new mongoose.Schema({
 },{_id: false});
 
 const QuestionSchema = new mongoose.Schema({
-  fileName:{type:String},
+  quiz_no:{type:Number},
   questionText: { type: String},
   type: { type: String, enum: ['question', 'statement'], default: 'question' },
   options: [OptionSchema],
