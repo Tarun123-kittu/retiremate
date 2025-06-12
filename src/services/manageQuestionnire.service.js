@@ -2,16 +2,76 @@ const primeQuestionsModel = require("../models/questions-prime.model");
 const QuestionsByAgeGroupModel = require("../models/questions-byAgeGroup.model");
 
 
+exports.processExcelFile = async (data) => {
+  try {
+      const questionsMap = {};
+      const pendingStatements = {};
+      for (const row of data) {
+      const qid = row['Q#']?.trim();
+      const questionText = row['Question']?.trim();
+      const optionLabel = row['Option']?.trim();
+      const comment = row['Comment']?.trim();
+
+      if (!qid || !questionText) continue;
+
+      if (qid.startsWith('STMT')) {
+        const stmtNum = qid.match(/\d+/)?.[0];
+        if (!stmtNum) continue;
+
+        if (!pendingStatements[stmtNum]) pendingStatements[stmtNum] = [];
+        pendingStatements[stmtNum].push(questionText);
+
+        const questionKey = `Q${stmtNum}`;
+        if (questionsMap[questionKey]) {
+          questionsMap[questionKey].system_greeting = pendingStatements[stmtNum];
+        }
+
+      } else if (qid.startsWith('Q')) {
+        const qNum = qid.match(/\d+/)?.[0];
+        const isFreeText = optionLabel?.includes('(Free Text)');
+
+        if (!questionsMap[qid]) {
+            questionsMap[qid] = {
+            quiz_no: qNum,
+            questionText,
+            options: [],
+            type: isFreeText ? 'statement' : 'question',
+            system_greeting: pendingStatements[qNum] || []
+          };
+        }
+
+        if (isFreeText) {
+          questionsMap[qid].type = 'statement';
+        }
+
+        if (optionLabel || comment) {
+            questionsMap[qid].options.push({
+            value: optionLabel.replace(/[\s-]+/g, '_').toLowerCase(),
+            label: optionLabel,
+            comment: comment || ''
+          });
+        }}
+    }
+     return questionsMap
+
+  } catch (error) {
+    console.log("ERROR::", error)
+    throw new Error(error.message || 'Failed to process excel file.');
+  }
+}
+
+
 exports.processVendorFile = async (questionsMap) => {
   try {
-    const newOptionValues = new Set();
-    await primeQuestionsModel.deleteMany();
-    for (const key of Object.keys(questionsMap)) {
+      const newOptionValues = new Set();
+      await primeQuestionsModel.deleteMany();
+      for (const key of Object.keys(questionsMap)) {
       const { questionText, options, quiz_no, system_greeting } =
-        questionsMap[key];
+      questionsMap[key];
+
       const existingQuestion = await primeQuestionsModel.findOne({
-        questionText,
-        type: "question",
+      questionText,
+      type: "question",
       });
       if (existingQuestion) {
         const newOptionsJSON = JSON.stringify(options);
@@ -22,25 +82,25 @@ exports.processVendorFile = async (questionsMap) => {
         }
       } else {
         await primeQuestionsModel.create({
-          questionText,
-          type: "question",
-          options,
-          quiz_no,
-          system_greetings: system_greeting,
-        });
+        questionText,
+        type: "question",
+        options,
+        quiz_no,
+        system_greetings: system_greeting,
+      });
       }
       for (const opt of options) {
         if (opt.value) newOptionValues.add(opt.value);
-      }
-    }
+      }}
     const existingValues = await QuestionsByAgeGroupModel.find({
-      value: { $in: Array.from(newOptionValues) },
+    value: { $in: Array.from(newOptionValues) },
     }).distinct("value");
     const missingValues = [...newOptionValues].filter(
-      (v) => !existingValues.includes(v)
+    (v) => !existingValues.includes(v)
     );
+    
     if (missingValues.length > 0) {
-      const toInsert = missingValues.map((value) => ({
+    const toInsert = missingValues.map((value) => ({
         value,
         questions: [],
       }));
@@ -55,18 +115,20 @@ exports.processVendorFile = async (questionsMap) => {
 
 
 exports.processValueFile = async (value, questionsMap) => {
+
   const allQuestions = await primeQuestionsModel.find({ type: "question" });
+
   const validValues = new Set();
   for (const q of allQuestions) {
     for (const opt of q.options) {
       if (opt.value) validValues.add(opt.value);
     }
   }
+
   if (!validValues.has(value)) {
-    throw new Error(
-      `Invalid file name. No matching value "${value}" found in prime-questions model`
-    );
+    throw new Error(`Invalid file name. No matching value "${value}" found in prime-questions model`);
   }
+
   const updatedQuestions = [];
   for (const key of Object.keys(questionsMap)) {
     if (key === "__statements") continue;
@@ -80,14 +142,19 @@ exports.processValueFile = async (value, questionsMap) => {
       options,
     });
   }
+
   const existing = await QuestionsByAgeGroupModel.findOne({ value });
   if (existing) {
+
     existing.questions = updatedQuestions;
     await existing.save();
+
   } else {
+
     await QuestionsByAgeGroupModel.create({
       value,
       questions: updatedQuestions,
     });
+
   }
 };
